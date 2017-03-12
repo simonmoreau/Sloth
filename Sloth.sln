@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26206.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sloth", "Sloth\Sloth.csproj", "{8859565F-3434-40C0-8B01-877ABA7BD1B5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xbim.BCF", "..\XbimBCF\Xbim.BCF\Xbim.BCF.csproj", "{60BD2BFD-A99E-4CDD-9B82-88A96E4380CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,18 @@ Global
 		{8859565F-3434-40C0-8B01-877ABA7BD1B5}.Release|x64.Build.0 = Release|x64
 		{8859565F-3434-40C0-8B01-877ABA7BD1B5}.Release|x86.ActiveCfg = Release|x86
 		{8859565F-3434-40C0-8B01-877ABA7BD1B5}.Release|x86.Build.0 = Release|x86
+		{60BD2BFD-A99E-4CDD-9B82-88A96E4380CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60BD2BFD-A99E-4CDD-9B82-88A96E4380CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60BD2BFD-A99E-4CDD-9B82-88A96E4380CD}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{60BD2BFD-A99E-4CDD-9B82-88A96E4380CD}.Debug|x64.Build.0 = Debug|Any CPU
+		{60BD2BFD-A99E-4CDD-9B82-88A96E4380CD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{60BD2BFD-A99E-4CDD-9B82-88A96E4380CD}.Debug|x86.Build.0 = Debug|Any CPU
+		{60BD2BFD-A99E-4CDD-9B82-88A96E4380CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60BD2BFD-A99E-4CDD-9B82-88A96E4380CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60BD2BFD-A99E-4CDD-9B82-88A96E4380CD}.Release|x64.ActiveCfg = Release|Any CPU
+		{60BD2BFD-A99E-4CDD-9B82-88A96E4380CD}.Release|x64.Build.0 = Release|Any CPU
+		{60BD2BFD-A99E-4CDD-9B82-88A96E4380CD}.Release|x86.ActiveCfg = Release|Any CPU
+		{60BD2BFD-A99E-4CDD-9B82-88A96E4380CD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

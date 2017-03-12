@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Sloth.Models;
+using Xbim.BCF.XMLNodes;
 
 namespace Sloth.Data
 {
@@ -22,5 +23,9 @@ namespace Sloth.Data
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
         }
+
+        public DbSet<Xbim.BCF.XMLNodes.BCFTopic> BCFTopic { get; set; }
+
+        public DbSet<Sloth.Models.DisplayTopic> DisplayTopic { get; set; }
     }
 }
