@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Threading.Tasks;
 using Xbim.BCF;
@@ -11,21 +13,30 @@ namespace Sloth.Models
     {
         public DisplayTopic(Topic topic)
         {
+            BCFComment firstComment = topic.Markup.Comments.FirstOrDefault();
+
             Guid = topic.Markup.Topic.Guid;
-            Title = topic.Markup.Topic.Title;
+            Title = topic.Markup.Topic.Title ;
             TopicType = topic.Markup.Topic.TopicType;
-            Description = topic.Markup.Topic.Description;
+            Description = !String.IsNullOrEmpty(topic.Markup.Topic.Description) ? topic.Markup.Topic.Description : firstComment.Comment;
             Index = topic.Markup.Topic.Index;
-            CreationDate = topic.Markup.Topic.CreationDate;
-            CreationAuthor = topic.Markup.Topic.CreationAuthor;
-            ModifiedDate = topic.Markup.Topic.ModifiedDate;
-            ModifiedAuthor = topic.Markup.Topic.ModifiedAuthor;
+            CreationDate = topic.Markup.Topic.CreationDate != null ? topic.Markup.Topic.CreationDate : firstComment.Date;
+            CreationAuthor = !String.IsNullOrEmpty(topic.Markup.Topic.CreationAuthor) ? topic.Markup.Topic.CreationAuthor : firstComment.Author;
+            ModifiedDate =  topic.Markup.Topic.ModifiedDate != null ? topic.Markup.Topic.ModifiedDate: firstComment.ModifiedDate;
+            ModifiedAuthor = !String.IsNullOrEmpty(topic.Markup.Topic.ModifiedAuthor) ? topic.Markup.Topic.ModifiedAuthor : firstComment.ModifiedAuthor;
             AssignedTo = topic.Markup.Topic.AssignedTo;
-            TopicStatus = topic.Markup.Topic.TopicStatus;
+            TopicStatus = !String.IsNullOrEmpty(topic.Markup.Topic.TopicStatus) ? topic.Markup.Topic.TopicStatus: firstComment.Status;
 
             if (topic.Snapshots.FirstOrDefault().Value!=null)
             {
-                string base64 = Convert.ToBase64String(topic.Snapshots.FirstOrDefault().Value);
+                System.IO.MemoryStream myMemStream = new System.IO.MemoryStream(topic.Snapshots.FirstOrDefault().Value);
+                System.Drawing.Image fullsizeImage = System.Drawing.Image.FromStream(myMemStream);
+
+                System.Drawing.Image newImage = fullsizeImage.GetThumbnailImage(512, 512, null, IntPtr.Zero);
+                System.IO.MemoryStream myResult = new System.IO.MemoryStream();
+                newImage.Save(myResult, System.Drawing.Imaging.ImageFormat.Jpeg);  //Or whatever format you want.
+
+                string base64 = Convert.ToBase64String(myResult.ToArray());
                 ImageSource = String.Format("data:image/gif;base64,{0}", base64);
             }
             else

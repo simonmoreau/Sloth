@@ -2,36 +2,39 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col">
+<div class="mdl-grid center-items">
+    <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col">
 
-    <div class="mdl-card__supporting-text">
+        <div class="mdl-card__supporting-text">
 
-        <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Upload" class="navbar-right">
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--file">
-                <input class="mdl-textfield__input" placeholder="File" type="text" id="uploadFile" readonly />
-                <div class="mdl-button mdl-button--accent mdl-button--icon mdl-button--file">
-                    <i class="material-icons">attach_file</i><input type="file" name="file" id="uploadBtn">
+            <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Upload" class="navbar-right">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--file">
+                    <input class="mdl-textfield__input" placeholder="File" type="text" id="uploadFile" readonly />
+                    <div class="mdl-button mdl-button--accent mdl-button--icon mdl-button--file">
+                        <i class="material-icons">attach_file</i><input type="file" name="file" id="uploadBtn">
+                    </div>
                 </div>
-            </div>
-            <label class="mdl-button mdl-button--accent mdl-button--raised mdl-js-button mdl-js-ripple-effect">
-                Upload
-                <input type="submit" value="Upload" name="Submit" id="Submit" style="display: none;" />
-            </label>
-        </form>
+                <label class="mdl-button mdl-button--accent mdl-button--raised mdl-js-button mdl-js-ripple-effect">
+                    Upload
+                    <input type="submit" value="Upload" name="Submit" id="Submit" style="display: none;" />
+                </label>
+            </form>
+        </div>
+    </div>
+
+    <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col">
+        <div class="mdl-card__media">
+            <img src="http://www.heartofthecity.co.nz/sites/default/files/listing_images/2013%20New%20Sky%20Tower%20Panorama%20Lrg%20Tower%20Med%20sqaure.jpg" width="173" height="157" border="0"
+                 alt="" style="padding:10px;">
+        </div>
+        <div class="mdl-card__supporting-text">
+            Auckland Sky Tower, taken March 24th, 2014
+        </div>
+        <div class="mdl-card__supporting-text">
+            The Sky Tower is an observation and telecommunications tower located in Auckland,
+            New Zealand. It is 328 metres (1,076 ft) tall, making it the tallest man-made structure
+            in the Southern Hemisphere.
+        </div>
     </div>
 </div>
 
-<div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col">
-    <div class="mdl-card__media">
-        <img src="http://www.heartofthecity.co.nz/sites/default/files/listing_images/2013%20New%20Sky%20Tower%20Panorama%20Lrg%20Tower%20Med%20sqaure.jpg" width="173" height="157" border="0"
-             alt="" style="padding:10px;">
-    </div>
-    <div class="mdl-card__supporting-text">
-        Auckland Sky Tower, taken March 24th, 2014
-    </div>
-    <div class="mdl-card__supporting-text">
-        The Sky Tower is an observation and telecommunications tower located in Auckland,
-        New Zealand. It is 328 metres (1,076 ft) tall, making it the tallest man-made structure
-        in the Southern Hemisphere.
-    </div>
-</div>

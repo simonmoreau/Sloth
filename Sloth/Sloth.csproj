@@ -10,7 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="wwwroot\images\doc.svg" />
+    <Content Include="wwwroot\images\pdf.svg" />
     <Content Include="wwwroot\images\sloth.svg" />
+    <Content Include="wwwroot\images\xls.svg" />
     <Content Include="wwwroot\js\site.js" />
     <Content Include="wwwroot\js\site.ts" />
   </ItemGroup>
