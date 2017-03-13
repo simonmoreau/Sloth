@@ -37,8 +37,8 @@
 }
 
 .demo-card-image.mdl-card {
-    width: 300px;
-    height: 300px;
+    width: 310px;
+    height: 310px;
 }
 
 .demo-card-image__caption {
@@ -55,4 +55,9 @@
 
 .demo-card-wide.mdl-card {
     width: 100%;
+}
+
+.logo-export{
+    height:30px;
+    width:30px;
 }

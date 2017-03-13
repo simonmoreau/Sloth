@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <Content Include="wwwroot\images\doc.svg" />
+    <Content Include="wwwroot\images\GitHub.svg" />
     <Content Include="wwwroot\images\pdf.svg" />
     <Content Include="wwwroot\images\sloth.svg" />
     <Content Include="wwwroot\images\xls.svg" />
