@@ -11,6 +11,7 @@ namespace Sloth.Controllers
 {
     public class HomeController : Controller
     {
+
         public IActionResult Index()
         {
             return View();
@@ -27,7 +28,10 @@ namespace Sloth.Controllers
             // full path to file in temp location
             var tempFilePath = Path.GetTempFileName();
 
+            
             BCF bcf = BCF.Deserialize(file.OpenReadStream());
+
+            Services.SessionExtensionMethods.SetObject(HttpContext.Session, "BCF", bcf);
             //if (file.Length > 0)
             //{
 
@@ -40,6 +44,43 @@ namespace Sloth.Controllers
             List<Models.DisplayTopic> topics = bcf.Topics.Select(o => new Models.DisplayTopic(o)).ToList();
 
             return View("Topics", topics);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public FileStreamResult WordExport()
+        {
+            Response.Headers.Add("content-disposition", "attachment; filename=test.bcfzip");
+
+            BCF bcf = Services.SessionExtensionMethods.GetObject<BCF>(HttpContext.Session, "BCF");
+
+            return File(bcf.Serialize(),
+                        "application/octet-stream"); // or "application/x-rar-compressed"
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ExcelExport()
+        {
+            Response.Headers.Add("content-disposition", "attachment; filename=test.bcfzip");
+
+            BCF bcf = Services.SessionExtensionMethods.GetObject<BCF>(HttpContext.Session, "BCF");
+
+            return File(bcf.Serialize(),
+                        "application/octet-stream"); // or "application/x-rar-compressed"
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult PDFExport()
+        {
+            Response.Headers.Add("content-disposition", "attachment; filename=test.bcfzip");
+
+            BCF bcf = Services.SessionExtensionMethods.GetObject<BCF>(HttpContext.Session, "BCF");
+
+            return File(bcf.Serialize(),
+                        "application/octet-stream"); // or "application/x-rar-compressed"
         }
 
         public IActionResult About()
