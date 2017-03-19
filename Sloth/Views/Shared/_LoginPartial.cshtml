@@ -6,10 +6,14 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
+    <a asp-area="" asp-controller="Manage" asp-action="Index" title="Manage" class="mdl-navigation__link">Hello @UserManager.GetUserName(User)!</a>
     <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
-        <a asp-area="" asp-controller="Manage" asp-action="Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
-        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised">Log out</button>
+        
+        <button type="submit" class="mdl-button mdl-js-button  mdl-button--accent mdl-button--raised">Log out</button>
     </form>
+
+    @*<a asp-area="" asp-controller="Manage" asp-action="Index" title="Manage" class="mdl-navigation__link">Hello @UserManager.GetUserName(User)!</a>
+    <a asp-area="" asp-controller="Account" asp-action="Logout" method="post" title="Log Out" class="mdl-button mdl-button--accent mdl-button--raised">Log Out</a>*@
 }
 else
 {

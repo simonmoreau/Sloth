@@ -17,33 +17,39 @@ namespace Sloth.Controllers
             return View();
         }
 
+        public IActionResult Topics()
+        {
+            if (HttpContext.Session.Keys.Count() != 0)
+            {
+                Models.DisplayBCF displayBCF = Services.SessionExtensionMethods.GetObject<Models.DisplayBCF>(HttpContext.Session, "BCF");
+
+                List<Models.DisplayTopic> DisplayTopics = displayBCF.BCF.Topics.Select(o => new Models.DisplayTopic(o)).ToList();
+
+                return View("Topics", DisplayTopics);
+            }
+            else
+            {
+                return View("Index");
+            }
+
+        }
+
         [HttpPost("Home/Upload")]
         public async Task<IActionResult> Post(IFormFile file)
         {
             if (file == null || file.Length == 0) return Content("Item not found");
 
-            long size = file.Length;
             string fileName = file.FileName;
-
-            // full path to file in temp location
-            var tempFilePath = Path.GetTempFileName();
-
             
             BCF bcf = BCF.Deserialize(file.OpenReadStream());
 
-            Services.SessionExtensionMethods.SetObject(HttpContext.Session, "BCF", bcf);
-            //if (file.Length > 0)
-            //{
+            Models.DisplayBCF displayBCF = new Models.DisplayBCF(bcf, fileName);
 
-            //    using (var stream = new FileStream(tempFilePath, FileMode.Create))
-            //    {
-            //        await file.CopyToAsync(stream);
-            //    }
-            //}
+            Services.SessionExtensionMethods.SetObject(HttpContext.Session, "BCF", displayBCF);
 
-            List<Models.DisplayTopic> topics = bcf.Topics.Select(o => new Models.DisplayTopic(o)).ToList();
+            List<Models.DisplayTopic>  DisplayTopics = bcf.Topics.Select(o => new Models.DisplayTopic(o)).ToList();
 
-            return View("Topics", topics);
+            return View("Topics", DisplayTopics);
         }
 
 
@@ -51,12 +57,14 @@ namespace Sloth.Controllers
         [ValidateAntiForgeryToken]
         public FileStreamResult WordExport()
         {
-            Response.Headers.Add("content-disposition", "attachment; filename=test.bcfzip");
 
-            BCF bcf = Services.SessionExtensionMethods.GetObject<BCF>(HttpContext.Session, "BCF");
+            Models.DisplayBCF displayBCF = Services.SessionExtensionMethods.GetObject<Models.DisplayBCF>(HttpContext.Session, "BCF");
 
-            return File(bcf.Serialize(),
-                        "application/octet-stream"); // or "application/x-rar-compressed"
+            string wordFileName = Path.GetFileNameWithoutExtension(displayBCF.FileName) + ".docx";
+
+            Response.Headers.Add("content-disposition", "attachment; filename=" + wordFileName);
+
+            return File(displayBCF.ExportAsWord(wordFileName),"application/octet-stream"); // or "application/x-rar-compressed"
         }
 
         [HttpPost]

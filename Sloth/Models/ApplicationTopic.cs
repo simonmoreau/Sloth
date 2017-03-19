@@ -6,9 +6,130 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xbim.BCF;
 using Xbim.BCF.XMLNodes;
+using System.IO;
+using Novacode;
+using System.Drawing.Imaging;
 
 namespace Sloth.Models
 {
+    public class DisplayBCF
+    {
+        public DisplayBCF(BCF bcf, string filename)
+        {
+            BCF = bcf;
+            FileName = filename;
+        }
+
+        ///// <summary>
+        ///// A list of topics to be displayed
+        ///// </summary>
+        //public List<DisplayTopic> DisplayTopics { get; }
+
+        /// <summary>
+        /// The BCF filename
+        /// </summary>
+        /// 
+        public string FileName { get; }
+
+        /// <summary>
+        /// The original BCF file
+        /// </summary>
+        /// 
+        public BCF BCF { get; }
+
+        public Stream ExportAsWord(string filename)
+        {
+            // Create a document in memory:
+            using (DocX doc = DocX.Create(filename))
+            {
+                //if (_templatePath != null)
+                //{
+                //    doc.ApplyTemplate(_templatePath);
+                //}
+
+                int i = 1;
+
+                foreach (Topic topic in BCF.Topics)
+                {
+                    //Add note to the report
+                    AddNoteToReport(topic, doc);
+                    //(sender as BackgroundWorker).ReportProgress(i);
+                    i++;
+                }
+
+                doc.Save();
+            }
+
+            System.IO.FileStream stream = new System.IO.FileStream(filename, System.IO.FileMode.Open);
+
+
+            return stream;
+        }
+
+        private void AddNoteToReport(Topic topic, DocX doc)
+        {
+            Novacode.Paragraph p;
+
+            // Insert a paragrpah:
+            p = doc.InsertParagraph(topic.Markup.Topic.Title);
+            //p.StyleName = _styles.TitleStyle;
+
+            doc.InsertParagraph("");
+
+            //Insert the date of the note
+            if (topic.Markup.Comments.FirstOrDefault() != null)
+            {
+                p = doc.InsertParagraph("Note created on " + topic.Markup.Comments[0].Date.ToString() + " by " + topic.Markup.Comments[0].Author);
+                //p.StyleName = _styles.DateStyle;
+
+                p = doc.InsertParagraph("Status : " + topic.Markup.Comments[0].Status + " - " + topic.Markup.Comments[0].VerbalStatus);
+                //p.StyleName = _styles.DateStyle;
+
+                p = doc.InsertParagraph(topic.Markup.Comments[0].Comment);
+                //p.StyleName = _styles.ContentStyle;
+            }
+
+
+            if (topic.Snapshots != null)
+            {
+                System.IO.MemoryStream myMemStream = new System.IO.MemoryStream(topic.Snapshots.FirstOrDefault().Value);
+                //System.Drawing.Image fullsizeImage = System.Drawing.Image.FromStream(myMemStream);
+
+                // Add an Image to the docx file
+                Novacode.Image img = doc.AddImage(myMemStream);
+                Novacode.Picture pic = img.CreatePicture(); // img.CreatePicture(450, 600);
+
+                p = doc.InsertParagraph("", false);
+                p.InsertPicture(pic);
+
+                //using (Stream stream = Services.BCFServices.GetImageStreamFromBytes(,false))
+                //{
+
+                //}
+            }
+
+
+            if (topic.Markup.Comments != null)
+            {
+                int commentCount = topic.Markup.Comments.Count();
+                if (commentCount > 1)
+                {
+                    for (int j = 1; j < commentCount; j++)
+                    {
+                        p = doc.InsertParagraph("Note created on " + topic.Markup.Comments[j].Date.ToString() + " by " + topic.Markup.Comments[0].Author);
+                        //p.StyleName = _styles.DateStyle;
+
+                        p = doc.InsertParagraph(topic.Markup.Comments[j].Comment);
+                        //p.StyleName = _styles.ContentStyle;
+                    }
+                }
+            }
+
+            p.InsertPageBreakAfterSelf();
+        }
+    }
+
+
     public class DisplayTopic
     {
         public DisplayTopic(Topic topic)
@@ -29,15 +150,7 @@ namespace Sloth.Models
 
             if (topic.Snapshots.FirstOrDefault().Value!=null)
             {
-                System.IO.MemoryStream myMemStream = new System.IO.MemoryStream(topic.Snapshots.FirstOrDefault().Value);
-                System.Drawing.Image fullsizeImage = System.Drawing.Image.FromStream(myMemStream);
-
-                System.Drawing.Image newImage = fullsizeImage.GetThumbnailImage(512, 512, null, IntPtr.Zero);
-                System.IO.MemoryStream myResult = new System.IO.MemoryStream();
-                newImage.Save(myResult, System.Drawing.Imaging.ImageFormat.Jpeg);  //Or whatever format you want.
-
-                string base64 = Convert.ToBase64String(myResult.ToArray());
-                ImageSource = String.Format("data:image/gif;base64,{0}", base64);
+                ImageSource = Services.BCFServices.GetImageFromBytes(topic.Snapshots.FirstOrDefault().Value, true);
             }
             else
             {
