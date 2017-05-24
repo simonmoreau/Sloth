@@ -9,6 +9,12 @@
     <UserSecretsId>aspnet-Sloth-4b8572da-b6b2-441a-b483-f7a508f94a73</UserSecretsId>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>True</DebugSymbols>
+  </PropertyGroup>
+
   <ItemGroup>
     <Content Include="wwwroot\images\doc.svg" />
     <Content Include="wwwroot\images\GitHub.svg" />
@@ -20,6 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DocX" Version="1.0.0.22" />
+    <PackageReference Include="EPPlus" Version="4.1.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="1.1.1" />

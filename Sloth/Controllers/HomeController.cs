@@ -31,7 +31,6 @@ namespace Sloth.Controllers
             {
                 return View("Index");
             }
-
         }
 
         [HttpPost("Home/Upload")]
@@ -55,7 +54,7 @@ namespace Sloth.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public FileStreamResult WordExport()
+        public IActionResult WordExport()
         {
 
             Models.DisplayBCF displayBCF = Services.SessionExtensionMethods.GetObject<Models.DisplayBCF>(HttpContext.Session, "BCF");
@@ -64,19 +63,30 @@ namespace Sloth.Controllers
 
             Response.Headers.Add("content-disposition", "attachment; filename=" + wordFileName);
 
-            return File(displayBCF.ExportAsWord(wordFileName),"application/octet-stream"); // or "application/x-rar-compressed"
+            MemoryStream ms = displayBCF.ExportAsWord();
+
+            byte[] bytesInStream = ms.ToArray(); // simpler way of converting to array
+            ms.Close();
+
+            return File(bytesInStream, "application/octet-stream"); // or "application/x-rar-compressed"
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult ExcelExport()
         {
-            Response.Headers.Add("content-disposition", "attachment; filename=test.bcfzip");
+            Models.DisplayBCF displayBCF = Services.SessionExtensionMethods.GetObject<Models.DisplayBCF>(HttpContext.Session, "BCF");
 
-            BCF bcf = Services.SessionExtensionMethods.GetObject<BCF>(HttpContext.Session, "BCF");
+            string excelFileName = Path.GetFileNameWithoutExtension(displayBCF.FileName) + ".xlsx";
 
-            return File(bcf.Serialize(),
-                        "application/octet-stream"); // or "application/x-rar-compressed"
+            Response.Headers.Add("content-disposition", "attachment; filename=" + excelFileName);
+
+            MemoryStream ms = displayBCF.ExportAsExcel();
+
+            byte[] bytesInStream = ms.ToArray(); // simpler way of converting to array
+            ms.Close();
+
+            return File(bytesInStream, "application/octet-stream"); // or "application/x-rar-compressed"
         }
 
         [HttpPost]

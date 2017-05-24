@@ -9,6 +9,9 @@ using Xbim.BCF.XMLNodes;
 using System.IO;
 using Novacode;
 using System.Drawing.Imaging;
+using OfficeOpenXml;
+using OfficeOpenXml.Drawing;
+
 
 namespace Sloth.Models
 {
@@ -37,10 +40,12 @@ namespace Sloth.Models
         /// 
         public BCF BCF { get; }
 
-        public Stream ExportAsWord(string filename)
+        public MemoryStream ExportAsWord()
         {
+            MemoryStream ms = new MemoryStream();
+            string wordFileName = Path.GetFileNameWithoutExtension(this.FileName) + ".docx";
             // Create a document in memory:
-            using (DocX doc = DocX.Create(filename))
+            using (DocX doc = DocX.Create(wordFileName))
             {
                 //if (_templatePath != null)
                 //{
@@ -52,21 +57,75 @@ namespace Sloth.Models
                 foreach (Topic topic in BCF.Topics)
                 {
                     //Add note to the report
-                    AddNoteToReport(topic, doc);
+                    AddTopicToWord(topic, doc);
                     //(sender as BackgroundWorker).ReportProgress(i);
                     i++;
                 }
 
-                doc.Save();
+                doc.SaveAs(ms);
             }
 
-            System.IO.FileStream stream = new System.IO.FileStream(filename, System.IO.FileMode.Open);
-
-
-            return stream;
+            return ms;
         }
 
-        private void AddNoteToReport(Topic topic, DocX doc)
+        public MemoryStream ExportAsExcel()
+        {
+            MemoryStream ms = new MemoryStream();
+            //string wordFileName = Path.GetFileNameWithoutExtension(this.FileName) + ".docx";
+            // Create a document in memory:
+            DirectoryInfo outputDir = new DirectoryInfo(@"C:\Users\smoreau\Downloads\wetransfer-0c7627");
+
+            FileInfo newFile = new FileInfo(outputDir.FullName + @"\sample1.xlsx");
+            if (newFile.Exists)
+            {
+                newFile.Delete();  // ensures we create a new workbook
+                newFile = new FileInfo(outputDir.FullName + @"\sample1.xlsx");
+            }
+
+            using (ExcelPackage package = new ExcelPackage(ms))
+            {
+                int i = 2;
+
+                // add a new worksheet to the empty workbook
+                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Report");
+                //Add the headers
+                worksheet.Cells[1, 1].Value = "Title";
+                worksheet.Cells[1, 2].Value = "Author";
+                worksheet.Cells[1, 3].Value = "Date";
+                worksheet.Cells[1, 4].Value = "Time";
+                worksheet.Cells[1, 5].Value = "Status";
+                worksheet.Cells[1, 6].Value = "VerbalStatus";
+                worksheet.Cells[1, 7].Value = "Comment";
+                worksheet.Cells[1, 8].Value = "Picture";
+
+                foreach (Topic topic in BCF.Topics)
+                {
+                    //Add note to the report
+                    AddTopicToExcel(topic, worksheet, i);
+                    //(sender as BackgroundWorker).ReportProgress(i);
+                    i++;
+                }
+
+
+                // set some document properties
+                package.Workbook.Properties.Title = "BCF Report";
+                package.Workbook.Properties.Author = "Simon Moreau";
+                package.Workbook.Properties.Comments = "This is an Excel report of your BCF file";
+
+                // set some extended property values
+                package.Workbook.Properties.Company = "BIM 42";
+
+                // set some custom property values
+                package.Workbook.Properties.SetCustomPropertyValue("Checked by", "Simon Moreau");
+
+                package.Save();
+                //package.SaveAs(ms);
+            }
+
+            return ms;
+        }
+
+        private void AddTopicToWord(Topic topic, DocX doc)
         {
             Novacode.Paragraph p;
 
@@ -92,20 +151,18 @@ namespace Sloth.Models
 
             if (topic.Snapshots != null)
             {
-                System.IO.MemoryStream myMemStream = new System.IO.MemoryStream(topic.Snapshots.FirstOrDefault().Value);
-                //System.Drawing.Image fullsizeImage = System.Drawing.Image.FromStream(myMemStream);
+                if (topic.Snapshots.Count != 0)
+                {
+                    System.IO.MemoryStream myMemStream = new System.IO.MemoryStream(topic.Snapshots.FirstOrDefault().Value);
+                    //System.Drawing.Image fullsizeImage = System.Drawing.Image.FromStream(myMemStream);
 
-                // Add an Image to the docx file
-                Novacode.Image img = doc.AddImage(myMemStream);
-                Novacode.Picture pic = img.CreatePicture(); // img.CreatePicture(450, 600);
+                    // Add an Image to the docx file
+                    Novacode.Image img = doc.AddImage(myMemStream);
+                    Novacode.Picture pic = img.CreatePicture(); // img.CreatePicture(450, 600);
 
-                p = doc.InsertParagraph("", false);
-                p.InsertPicture(pic);
-
-                //using (Stream stream = Services.BCFServices.GetImageStreamFromBytes(,false))
-                //{
-
-                //}
+                    p = doc.InsertParagraph("", false);
+                    p.InsertPicture(pic);
+                }
             }
 
 
@@ -126,6 +183,70 @@ namespace Sloth.Models
             }
 
             p.InsertPageBreakAfterSelf();
+        }
+
+        private void AddTopicToExcel(Topic topic, ExcelWorksheet worksheet, int i)
+        {
+            //Set the row heigth
+            worksheet.Row(i).Height = 150;
+            // Insert a paragrpah:
+            worksheet.Cells[i,1].Value = topic.Markup.Topic.Title;
+            //p.StyleName = _styles.TitleStyle;
+
+            //Insert the date of the note
+            if (topic.Markup.Comments.FirstOrDefault() != null)
+            {
+                //OfficeOpenXml.Style.ExcelNumberFormat timeFormat = new OfficeOpenXml.Style.ExcelNumberFormat();
+
+                worksheet.Cells[i, 2].Value = topic.Markup.Comments[0].Author;
+                worksheet.Cells[i, 3].Value = topic.Markup.Comments[0].Date.ToString("yyyy/mm/dd");
+                worksheet.Cells[i, 3].Style.Numberformat.Format = "yyyy/mm/dd";
+                worksheet.Cells[i, 4].Value = topic.Markup.Comments[0].Date.ToString("HH:mm:ss");
+                worksheet.Cells[i, 4].Style.Numberformat.Format = "hh:mm:ss";
+                worksheet.Cells[i, 5].Value = topic.Markup.Comments[0].Status;
+                worksheet.Cells[i, 6].Value = topic.Markup.Comments[0].VerbalStatus;
+                worksheet.Cells[i, 7].Value = topic.Markup.Comments[0].Comment;
+                worksheet.Cells[i, 7].Style.WrapText = true;
+                //worksheet.Cells
+            }
+
+
+            if (topic.Snapshots != null)
+            {
+                if (topic.Snapshots.Count != 0)
+                {
+                    System.IO.MemoryStream myMemStream = new System.IO.MemoryStream(topic.Snapshots.FirstOrDefault().Value);
+                    System.Drawing.Image fullsizeImage = System.Drawing.Image.FromStream(myMemStream);
+
+                    // Add an Image to the xlsx file
+                    ExcelPicture shape = worksheet.Drawings.AddPicture(topic.Markup.Topic.Guid.ToString(), fullsizeImage);
+
+                    double sizeRatio = fullsizeImage.Width / fullsizeImage.Height;
+
+                    shape.SetPosition(i-1, 0, 7, 0);
+                    int height = 200;
+                    int width = Convert.ToInt32(Math.Round(height * sizeRatio));
+
+                    shape.SetSize(width, height);
+                }
+            }
+
+
+            //if (topic.Markup.Comments != null)
+            //{
+            //    int commentCount = topic.Markup.Comments.Count();
+            //    if (commentCount > 1)
+            //    {
+            //        for (int j = 1; j < commentCount; j++)
+            //        {
+            //            p = doc.InsertParagraph("Note created on " + topic.Markup.Comments[j].Date.ToString() + " by " + topic.Markup.Comments[0].Author);
+            //            //p.StyleName = _styles.DateStyle;
+
+            //            p = doc.InsertParagraph(topic.Markup.Comments[j].Comment);
+            //            //p.StyleName = _styles.ContentStyle;
+            //        }
+            //    }
+            //}
         }
     }
 
