@@ -44,5 +44,26 @@ namespace Sloth.Services
             return String.Format("data:image/gif;base64,{0}", base64);
         }
 
+        public static MemoryStream GetImageStreamFromBytes(byte[] bytes, bool compress)
+        {
+            System.IO.MemoryStream myMemStream = new System.IO.MemoryStream(bytes);
+            
+            if (compress)
+            {
+                System.Drawing.Image fullsizeImage = System.Drawing.Image.FromStream(myMemStream);
+                myMemStream.Close();
+                System.Drawing.Image compressedImage = fullsizeImage.GetThumbnailImage(512, 512, null, IntPtr.Zero);
+                System.IO.MemoryStream ms = new System.IO.MemoryStream();
+                compressedImage.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);  //Or whatever format you want.
+                return ms;
+            }
+            else
+            {
+                return myMemStream;
+            }
+
+            
+        }
+
     }
 }

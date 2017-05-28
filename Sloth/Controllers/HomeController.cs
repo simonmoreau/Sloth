@@ -89,16 +89,32 @@ namespace Sloth.Controllers
             return File(bytesInStream, "application/octet-stream"); // or "application/x-rar-compressed"
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult PDFExport()
+        [HttpPost("Home/WordTemplate")]
+        public async Task<IActionResult> WordTemplate(IFormFile file)
         {
-            Response.Headers.Add("content-disposition", "attachment; filename=test.bcfzip");
 
-            BCF bcf = Services.SessionExtensionMethods.GetObject<BCF>(HttpContext.Session, "BCF");
+            if (file == null || file.Length == 0) return Content("Item not found");
 
-            return File(bcf.Serialize(),
-                        "application/octet-stream"); // or "application/x-rar-compressed"
+            string fileName = file.FileName;
+
+            // process uploaded files
+            // Don't rely on or trust the FileName property without validation.
+
+            return Ok(new { count = file.FileName, file.Length });
+        }
+
+        [HttpPost("Home/ExcelTemplate")]
+        public async Task<IActionResult> ExcelTemplate(IFormFile file)
+        {
+
+            if (file == null || file.Length == 0) return Content("Item not found");
+
+            string fileName = file.FileName;
+
+            // process uploaded files
+            // Don't rely on or trust the FileName property without validation.
+
+            return Ok(new { count = file.FileName, file.Length });
         }
 
         public IActionResult About()

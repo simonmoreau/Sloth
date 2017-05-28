@@ -16,6 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="wwwroot\images\apple.jpg" />
     <Content Include="wwwroot\images\doc.svg" />
     <Content Include="wwwroot\images\GitHub.svg" />
     <Content Include="wwwroot\images\pdf.svg" />

@@ -20,10 +20,24 @@
                     <span>As Excel</span>
                     <input type="submit" value="ExcelExport" formaction="ExcelExport" style="display: none;" />
                 </label>
+            </nav>
+        </form>
+        <span class="mdl-layout-title">Load a Template</span>
+        <form  method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="WordTemplate">
+            <nav class="mdl-navigation">
                 <label class="mdl-navigation__link">
-                    <object type="image/svg+xml" data="~/images/pdf.svg" class="logo-export">Your browser does not support SVG</object>
-                    <span>As PDF</span>
-                    <input type="submit" value="PDFExport" formaction="PDFExport" style="display: none;" />
+                    <object type="image/svg+xml" data="~/images/doc.svg" class="logo-export">Your browser does not support SVG</object>
+                    <span>Word Template</span>
+                    <input type="file" name="file" style="display: none;" onchange="this.form.submit()"/>
+                </label>
+            </nav>
+        </form>
+        <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="ExcelTemplate">
+            <nav class="mdl-navigation">
+                <label class="mdl-navigation__link">
+                    <object type="image/svg+xml" data="~/images/xls.svg" class="logo-export">Your browser does not support SVG</object>
+                    <span>Excel Template</span>
+                    <input type="file" name="file" style="display: none;" onchange="this.form.submit()" />
                 </label>
             </nav>
         </form>

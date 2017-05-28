@@ -71,16 +71,6 @@ namespace Sloth.Models
         public MemoryStream ExportAsExcel()
         {
             MemoryStream ms = new MemoryStream();
-            //string wordFileName = Path.GetFileNameWithoutExtension(this.FileName) + ".docx";
-            // Create a document in memory:
-            DirectoryInfo outputDir = new DirectoryInfo(@"C:\Users\smoreau\Downloads\wetransfer-0c7627");
-
-            FileInfo newFile = new FileInfo(outputDir.FullName + @"\sample1.xlsx");
-            if (newFile.Exists)
-            {
-                newFile.Delete();  // ensures we create a new workbook
-                newFile = new FileInfo(outputDir.FullName + @"\sample1.xlsx");
-            }
 
             using (ExcelPackage package = new ExcelPackage(ms))
             {
@@ -153,11 +143,12 @@ namespace Sloth.Models
             {
                 if (topic.Snapshots.Count != 0)
                 {
-                    System.IO.MemoryStream myMemStream = new System.IO.MemoryStream(topic.Snapshots.FirstOrDefault().Value);
+                    System.IO.MemoryStream myMemStream = Services.BCFServices.GetImageStreamFromBytes(topic.Snapshots.FirstOrDefault().Value, true);
                     //System.Drawing.Image fullsizeImage = System.Drawing.Image.FromStream(myMemStream);
 
                     // Add an Image to the docx file
                     Novacode.Image img = doc.AddImage(myMemStream);
+                    //myMemStream.Close();
                     Novacode.Picture pic = img.CreatePicture(); // img.CreatePicture(450, 600);
 
                     p = doc.InsertParagraph("", false);
@@ -200,9 +191,9 @@ namespace Sloth.Models
 
                 worksheet.Cells[i, 2].Value = topic.Markup.Comments[0].Author;
                 worksheet.Cells[i, 3].Value = topic.Markup.Comments[0].Date.ToString("yyyy/mm/dd");
-                worksheet.Cells[i, 3].Style.Numberformat.Format = "yyyy/mm/dd";
+                //worksheet.Cells[i, 3].Style.Numberformat.Format = "yyyy/mm/dd";
                 worksheet.Cells[i, 4].Value = topic.Markup.Comments[0].Date.ToString("HH:mm:ss");
-                worksheet.Cells[i, 4].Style.Numberformat.Format = "hh:mm:ss";
+                //worksheet.Cells[i, 4].Style.Numberformat.Format = "hh:mm:ss";
                 worksheet.Cells[i, 5].Value = topic.Markup.Comments[0].Status;
                 worksheet.Cells[i, 6].Value = topic.Markup.Comments[0].VerbalStatus;
                 worksheet.Cells[i, 7].Value = topic.Markup.Comments[0].Comment;
@@ -215,7 +206,7 @@ namespace Sloth.Models
             {
                 if (topic.Snapshots.Count != 0)
                 {
-                    System.IO.MemoryStream myMemStream = new System.IO.MemoryStream(topic.Snapshots.FirstOrDefault().Value);
+                    System.IO.MemoryStream myMemStream = Services.BCFServices.GetImageStreamFromBytes(topic.Snapshots.FirstOrDefault().Value, true);
                     System.Drawing.Image fullsizeImage = System.Drawing.Image.FromStream(myMemStream);
 
                     // Add an Image to the xlsx file
