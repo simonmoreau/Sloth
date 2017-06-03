@@ -54,5 +54,11 @@
   <ItemGroup>
     <ProjectReference Include="..\..\XbimBCF\Xbim.BCF\Xbim.BCF.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\files\" />
+    <Folder Include="wwwroot\files\" />
+    <Folder Include="wwwroot\files\" />
+    <Folder Include="wwwroot\files\" />
+  </ItemGroup>
 
 </Project>

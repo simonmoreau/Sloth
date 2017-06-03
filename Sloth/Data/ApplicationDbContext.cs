@@ -24,8 +24,9 @@ namespace Sloth.Data
             // Add your customizations after calling base.OnModelCreating(builder);
         }
 
-        public DbSet<Xbim.BCF.XMLNodes.BCFTopic> BCFTopic { get; set; }
+        public DbSet<ApplicationUser> ApplicationUser { get; set; }
 
-        public DbSet<Sloth.Models.DisplayTopic> DisplayTopic { get; set; }
+        public DbSet<FilePath> FilePath { get; set; }
+
     }
 }

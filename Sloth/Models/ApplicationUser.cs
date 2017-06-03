@@ -9,5 +9,11 @@ namespace Sloth.Models
     // Add profile data for application users by adding properties to the ApplicationUser class
     public class ApplicationUser : IdentityUser
     {
+        //public virtual ICollection<FilePath> FilePaths { get; set; }
+
+        
+        public List<FilePath> FilePaths { get; set; }
+        //public FilePath WordTemplatePath { get; set; }
+        //public FilePath ExcelTemplatePath { get; set; }
     }
 }

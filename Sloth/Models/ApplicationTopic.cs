@@ -241,7 +241,6 @@ namespace Sloth.Models
         }
     }
 
-
     public class DisplayTopic
     {
         public DisplayTopic(Topic topic)
