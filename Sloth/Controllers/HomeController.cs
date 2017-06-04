@@ -22,8 +22,8 @@ namespace Sloth.Controllers
 
         public HomeController(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager, 
-            IHostingEnvironment env, 
+            SignInManager<ApplicationUser> signInManager,
+            IHostingEnvironment env,
             ApplicationDbContext context)
         {
             _userManager = userManager;
@@ -34,39 +34,6 @@ namespace Sloth.Controllers
 
         public IActionResult Index()
         {
-            return View();
-        }
-
-        private List<Models.DisplayTopic> LoadTopics(string bcfFilePath, string BCFFileName)
-        {
-            using (FileStream stream = System.IO.File.Open(bcfFilePath, FileMode.Open))
-            {
-                BCF bcf = BCF.Deserialize(stream);
-
-                Models.DisplayBCF displayBCF = new Models.DisplayBCF(bcf, BCFFileName);
-
-                List<Models.DisplayTopic> DisplayTopics = bcf.Topics.Select(o => new Models.DisplayTopic(o)).ToList();
-
-                return DisplayTopics;
-            }
-        }
-
-        public async Task<IActionResult> Topics()
-        {
-            ////Find the current user
-            //ApplicationUser user = await _userManager.GetUserAsync(User);
-
-            //if (user == null)
-            //{
-
-            //}
-            //else
-            //{
-            //    FilePath file = _context.FilePath.Where(i => i.ApplicationUserId == user.Id).FirstOrDefault();
-            //    //user.FilePaths.FirstOrDefault();
-            //    return View("Topics", LoadTopics(file.FullFilePath,file.FileName));
-            //}
-
             if (HttpContext.Session.Keys.Count() != 0)
             {
                 if (HttpContext.Session.Keys.Contains("BCFFiles"))
@@ -82,18 +49,49 @@ namespace Sloth.Controllers
                         topics.AddRange(LoadTopics(BCFfile.FullFilePath, BCFfile.FileName));
                     }
 
-                    return View("Topics", topics);
+                    return View("Index",topics);
                 }
                 else
                 {
-                    return View("Topics");
+                    return View("Index");
                 }
             }
             else
             {
-                return View("Topics");
+                return View("Index");
             }
         }
+
+        private List<Models.DisplayTopic> LoadTopics(string bcfFilePath, string BCFFileName)
+        {
+            using (FileStream stream = System.IO.File.Open(bcfFilePath, FileMode.Open))
+            {
+                BCF bcf = BCF.Deserialize(stream);
+
+                List<Models.DisplayTopic> DisplayTopics = bcf.Topics.Select(o => new Models.DisplayTopic(o)).ToList();
+
+                return DisplayTopics;
+            }
+        }
+
+        //public async Task<IActionResult> Topics()
+        //{
+        //    ////Find the current user
+        //    //ApplicationUser user = await _userManager.GetUserAsync(User);
+
+        //    //if (user == null)
+        //    //{
+
+        //    //}
+        //    //else
+        //    //{
+        //    //    FilePath file = _context.FilePath.Where(i => i.ApplicationUserId == user.Id).FirstOrDefault();
+        //    //    //user.FilePaths.FirstOrDefault();
+        //    //    return View("Topics", LoadTopics(file.FullFilePath,file.FileName));
+        //    //}
+
+
+        //}
 
         [HttpPost("Home/Upload")]
         public async Task<IActionResult> UploadBCF(IFormFile file)
@@ -158,45 +156,61 @@ namespace Sloth.Controllers
                 Services.SessionExtensionMethods.SetObject(HttpContext.Session, "BCFFiles", BCFFiles);
             }
 
-            return await Topics();
+            return Index();
         }
 
 
-        [HttpPost]
+        [HttpPost("Home/WordExport")]
         [ValidateAntiForgeryToken]
         public IActionResult WordExport()
         {
+            if (HttpContext.Session.Keys.Contains("BCFFiles"))
+            {
+                //Get the current list of files
+                List<FilePath> BCFFiles = Services.SessionExtensionMethods.GetObject<List<FilePath>>(HttpContext.Session, "BCFFiles");
 
-            Models.DisplayBCF displayBCF = Services.SessionExtensionMethods.GetObject<Models.DisplayBCF>(HttpContext.Session, "BCF");
+                string wordFileName = Path.GetFileNameWithoutExtension(BCFFiles.FirstOrDefault().FileName) + ".docx";
 
-            string wordFileName = Path.GetFileNameWithoutExtension(displayBCF.FileName) + ".docx";
+                Response.Headers.Add("content-disposition", "attachment; filename=" + wordFileName);
 
-            Response.Headers.Add("content-disposition", "attachment; filename=" + wordFileName);
+                MemoryStream ms = Services.ExportServices.ExportAsWord(BCFFiles);
 
-            MemoryStream ms = displayBCF.ExportAsWord();
+                byte[] bytesInStream = ms.ToArray(); // simpler way of converting to array
+                ms.Close();
 
-            byte[] bytesInStream = ms.ToArray(); // simpler way of converting to array
-            ms.Close();
+                return File(bytesInStream, "application/octet-stream"); // or "application/x-rar-compressed"
+            }
+            else
+            {
+                return View("Index");
+            }
 
-            return File(bytesInStream, "application/octet-stream"); // or "application/x-rar-compressed"
         }
 
-        [HttpPost]
+        [HttpPost("Home/ExcelExport")]
         [ValidateAntiForgeryToken]
         public IActionResult ExcelExport()
         {
-            Models.DisplayBCF displayBCF = Services.SessionExtensionMethods.GetObject<Models.DisplayBCF>(HttpContext.Session, "BCF");
+            if (HttpContext.Session.Keys.Contains("BCFFiles"))
+            {
+                //Get the current list of files
+                List<FilePath> BCFFiles = Services.SessionExtensionMethods.GetObject<List<FilePath>>(HttpContext.Session, "BCFFiles");
 
-            string excelFileName = Path.GetFileNameWithoutExtension(displayBCF.FileName) + ".xlsx";
+                string excelFileName = Path.GetFileNameWithoutExtension(BCFFiles.FirstOrDefault().FileName) + ".xlsx";
 
-            Response.Headers.Add("content-disposition", "attachment; filename=" + excelFileName);
+                Response.Headers.Add("content-disposition", "attachment; filename=" + excelFileName);
 
-            MemoryStream ms = displayBCF.ExportAsExcel();
+                MemoryStream ms = Services.ExportServices.ExportAsExcel(BCFFiles);
 
-            byte[] bytesInStream = ms.ToArray(); // simpler way of converting to array
-            ms.Close();
+                byte[] bytesInStream = ms.ToArray(); // simpler way of converting to array
+                ms.Close();
 
-            return File(bytesInStream, "application/octet-stream"); // or "application/x-rar-compressed"
+                return File(bytesInStream, "application/octet-stream"); // or "application/x-rar-compressed"
+            }
+            else
+            {
+                return View("Index");
+            }
         }
 
         [HttpPost("Home/WordTemplate")]

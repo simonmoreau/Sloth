@@ -1,25 +1,112 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<Sloth.Models.DisplayTopic>
+
+@{
+    ViewData["Title"] = "Home";
 }
 
-<div class="mdl-grid center-items">
-    
-    @Html.Partial("_Upload")
+<!-- No header, and the drawer stays open on larger screens (fixed drawer). -->
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
+    <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title">Export</span>
 
-    <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col">
-        <div class="mdl-card__media">
-            <img src="~/images/apple.jpg" alt="" style="padding:10px;">
-        </div>
-        <div class="mdl-card__supporting-text">
-            Auckland Sky Tower, taken March 24th, 2014
-        </div>
-        <div class="mdl-card__supporting-text">
-            The Sky Tower is an observation and telecommunications tower located in Auckland,
-            New Zealand. It is 328 metres (1,076 ft) tall, making it the tallest man-made structure
-            in the Southern Hemisphere.
-        </div>
+        <nav class="mdl-navigation">
+            <form asp-controller="Home" method="post" asp-action="WordExport">
+                <label class="mdl-navigation__link">
+                    <object type="image/svg+xml" data="~/images/doc.svg" class="logo-export">Your browser does not support SVG</object>
+                    <span>As Word</span>
+                    <input type="submit" style="display: none;" />
+                </label>
+            </form>
+            <form asp-controller="Home" method="post" asp-action="ExcelExport">
+                <label class="mdl-navigation__link">
+                    <object type="image/svg+xml" data="~/images/xls.svg" class="logo-export">Your browser does not support SVG</object>
+                    <span>As Excel</span>
+                    <input type="submit" style="display: none;" />
+                </label>
+            </form>
+        </nav>
+        <span class="mdl-layout-title">Load a Template</span>
+        <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="WordTemplate">
+            <nav class="mdl-navigation">
+                <label class="mdl-navigation__link">
+                    <object type="image/svg+xml" data="~/images/doc.svg" class="logo-export">Your browser does not support SVG</object>
+                    <span>Word Template</span>
+                    <input type="file" name="file" style="display: none;" onchange="this.form.submit()" />
+                </label>
+            </nav>
+        </form>
+        <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="ExcelTemplate">
+            <nav class="mdl-navigation">
+                <label class="mdl-navigation__link">
+                    <object type="image/svg+xml" data="~/images/xls.svg" class="logo-export">Your browser does not support SVG</object>
+                    <span>Excel Template</span>
+                    <input type="file" name="file" style="display: none;" onchange="this.form.submit()" />
+                </label>
+            </nav>
+        </form>
+    </div>
+    <div class="mdl-layout__content">
+        @if (Model == null || Model.Count() == 0)
+        {
+            <div class="mdl-grid center-items">
+                <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--6-col">
+                    <div class="mdl-card__supporting-text">
+                        <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Upload" class="navbar-right">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--file">
+                                <div class="mdl-grid">
+                                    <div class="mdl-cell mdl-cell--6-col">
+                                        <input class="mdl-textfield__input" placeholder="File" type="text" id="uploadFile" readonly />
+                                        <div class="mdl-button mdl-button--accent mdl-button--icon mdl-button--file">
+                                            <i class="material-icons">attach_file</i><input type="file" name="file" id="uploadBtn">
+                                        </div>
+                                    </div>
+                                    <div class="mdl-cell mdl-cell--6-col">
+                                        <label class="mdl-button mdl-button--accent mdl-button--raised mdl-js-button mdl-js-ripple-effect">
+                                            Upload
+                                            <input type="submit" value="Upload" name="Submit" id="Submit" style="display: none;" />
+                                        </label>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="mdl-grid center-items">
+                <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--6-col">
+                    <div class="mdl-card__supporting-text">
+                        You don't have any BCF files, please load one
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="mdl-grid">
+                @foreach (var item in Model)
+                {
+                    <div class="mdl-card mdl-shadow--2dp mdl-cell demo-card-image">
+                        <div class="demo-card-image mdl-card" style="background: url('@item.ImageSource') center / cover">
+                            <div class="mdl-card__title mdl-card--expand"></div>
+                            <div class="demo-card-image__caption">
+                                <span class="demo-card-image__filename">@item.Title</span>
+                            </div>
+                        </div>
+                        <div class="mdl-card__supporting-text">
+                            <p>By @item.CreationAuthor</p>
+                            <p>@item.CreationDate</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
     </div>
 </div>
+
 <div class="mdl-layout-spacer"></div>
 <footer class="mdl-mini-footer">
     <div class="mdl-mega-footer--left-section">
