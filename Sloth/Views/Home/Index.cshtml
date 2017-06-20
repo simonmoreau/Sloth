@@ -18,71 +18,8 @@ else
 
 
 <!-- No header, and the drawer stays open on larger screens (fixed drawer). -->
-<div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
-    <div class="mdl-layout__drawer">
-        <span class="mdl-layout-title">Export</span>
-
-        <nav class="mdl-navigation">
-            <form asp-controller="Home" method="post" asp-action="WordExport">
-                <label class="mdl-navigation__link">
-                    <object type="image/svg+xml" data="~/images/doc.svg" class="logo-export">Your browser does not support SVG</object>
-                    <span>As Word</span>
-                    <input id="WordExportBnt" style="display: none;" />
-                </label>
-            </form>
-            <form asp-controller="Home" method="post" asp-action="ExcelExport">
-                <label class="mdl-navigation__link">
-                    <object type="image/svg+xml" data="~/images/xls.svg" class="logo-export">Your browser does not support SVG</object>
-                    <span>As Excel</span>
-                    <input id="ExcelExportBnt" style="display: none;" />
-                </label>
-            </form>
-        </nav>
-        <span class="mdl-layout-title">Load a Template</span>
-        <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="WordTemplate">
-            <nav class="mdl-navigation">
-                <label class="mdl-navigation__link">
-                    <object type="image/svg+xml" data="~/images/doc.svg" class="logo-export">Your browser does not support SVG</object>
-                    <span>Word Template</span>
-                    <input type="file" name="file" style="display: none;" onchange="this.form.submit()" />
-                </label>
-            </nav>
-        </form>
-        <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="ExcelTemplate">
-            <nav class="mdl-navigation">
-                <label class="mdl-navigation__link">
-                    <object type="image/svg+xml" data="~/images/xls.svg" class="logo-export">Your browser does not support SVG</object>
-                    <span>Excel Template</span>
-                    <input type="file" name="file" style="display: none;" onchange="this.form.submit()" />
-                </label>
-            </nav>
-        </form>
-    </div>
-    <div id="export-snackbar" class="mdl-js-snackbar mdl-snackbar">
-        <div class="mdl-snackbar__text"></div>
-        <button class="mdl-snackbar__action" type="button"></button>
-    </div>
+<div class="mdl-layout mdl-js-layout">
     <div class="mdl-layout__content">
-        <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Upload" class="navbar-right">
-            <div class="mdl-grid center-items">
-                <div class="mdl-cell mdl-cell--8-col mdl-shadow--2dp">
-                    <div class="mdl-grid center-items">
-                        <div class="mdl-cell mdl-cell--8-col mdl-textfield mdl-js-textfield mdl-textfield--file">
-                            <input class="mdl-textfield__input" placeholder="BCF File" type="text" id="uploadFile" readonly />
-                            <div class="mdl-button mdl-button--colored mdl-button--icon mdl-button--file">
-                                <i class="material-icons">attach_file</i><input type="file" name="file" id="uploadBtn">
-                            </div>
-                        </div>
-                        <div class="mdl-cell mdl-cell--4-col mdl-textfield mdl-js-textfield mdl-textfield--file">
-                            <label class="mdl-button mdl-button--accent mdl-button--raised mdl-js-button mdl-js-ripple-effect">
-                                Upload
-                                <input value="Upload" name="Submit" id="Submit" style="display: none;" />
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
 
         @if (Model == null || Model.Count() == 0)
         {
@@ -122,6 +59,12 @@ else
             </div>
         }
     </div>
+
+    <div id="export-snackbar" class="mdl-js-snackbar mdl-snackbar">
+        <div class="mdl-snackbar__text"></div>
+        <button class="mdl-snackbar__action" type="button"></button>
+    </div>
+
 </div>
 
 

@@ -66,11 +66,19 @@ namespace Sloth.Controllers
         {
             using (FileStream stream = System.IO.File.Open(bcfFilePath, FileMode.Open))
             {
-                BCF bcf = BCF.Deserialize(stream);
+                try
+                {
+                    BCF bcf = BCF.Deserialize(stream);
 
-                List<Models.DisplayTopic> DisplayTopics = bcf.Topics.Select(o => new Models.DisplayTopic(o)).ToList();
+                    List<Models.DisplayTopic> DisplayTopics = bcf.Topics.Select(o => new Models.DisplayTopic(o)).ToList();
 
-                return DisplayTopics;
+                    return DisplayTopics;
+                }
+                catch
+                {
+                    //Fail silently :-(
+                    return new List<Models.DisplayTopic>();
+                }
             }
         }
 
@@ -162,18 +170,25 @@ namespace Sloth.Controllers
 
         [HttpPost("Home/WordExport")]
         [ValidateAntiForgeryToken]
-        public IActionResult WordExport()
+        public ActionResult WordExport()
         {
             if (HttpContext.Session.Keys.Contains("BCFFiles"))
             {
                 //Get the current list of files
                 List<FilePath> BCFFiles = Services.SessionExtensionMethods.GetObject<List<FilePath>>(HttpContext.Session, "BCFFiles");
 
+                //Get the word template
+                string wordTemplatePath = "";
+                if (HttpContext.Session.Keys.Contains("wordTemplate"))
+                {
+                    wordTemplatePath = Services.SessionExtensionMethods.GetObject<string>(HttpContext.Session, "wordTemplate");
+                }
+
                 string wordFileName = Path.GetFileNameWithoutExtension(BCFFiles.FirstOrDefault().FileName) + ".docx";
 
                 Response.Headers.Add("content-disposition", "attachment; filename=" + wordFileName);
 
-                MemoryStream ms = Services.ExportServices.ExportAsWord(BCFFiles);
+                MemoryStream ms = Services.ExportServices.ExportAsWord(BCFFiles, wordTemplatePath);
 
                 byte[] bytesInStream = ms.ToArray(); // simpler way of converting to array
                 ms.Close();
@@ -189,7 +204,7 @@ namespace Sloth.Controllers
 
         [HttpPost("Home/ExcelExport")]
         [ValidateAntiForgeryToken]
-        public IActionResult ExcelExport()
+        public ActionResult ExcelExport()
         {
             if (HttpContext.Session.Keys.Contains("BCFFiles"))
             {
@@ -216,29 +231,76 @@ namespace Sloth.Controllers
         [HttpPost("Home/WordTemplate")]
         public async Task<IActionResult> WordTemplate(IFormFile file)
         {
+            //Generate an GUID for the file and use it to create the local file path
+            Guid BcfGuid = Guid.NewGuid();
+            string fullFilePath = Path.Combine(_env.WebRootPath, "files", "word_" + BcfGuid.ToString());
 
-            if (file == null || file.Length == 0) return Content("Item not found");
+            //Save the file on the server
+            using (FileStream stream = System.IO.File.OpenWrite(fullFilePath))
+            {
+                await file.CopyToAsync(stream);
+            }
 
-            string fileName = file.FileName;
+            //Create a new filePath for the uploaded BCF
+            FilePath BcfFile = new FilePath
+            {
+                FileName = System.IO.Path.GetFileName(file.FileName),
+                FileType = FileType.WordTemplate,
+                FullFilePath = fullFilePath
+            };
 
-            // process uploaded files
-            // Don't rely on or trust the FileName property without validation.
+            //Store it in Session
+            Services.SessionExtensionMethods.SetObject(HttpContext.Session, "wordTemplate", fullFilePath);
 
-            return Ok(new { count = file.FileName, file.Length });
+            ////Find the current user
+            //ApplicationUser user = await _userManager.GetUserAsync(User);
+
+            //if (user.FilePaths == null) user.FilePaths = new List<FilePath>();
+            //user.FilePaths.Add(BcfFile);
+
+            //if (ModelState.IsValid)
+            //{
+            //    _context.ApplicationUser.Update(user);
+            //    _context.SaveChanges();
+            //}
+
+            return View("Index");
         }
 
         [HttpPost("Home/ExcelTemplate")]
         public async Task<IActionResult> ExcelTemplate(IFormFile file)
         {
+            //Generate an GUID for the file and use it to create the local file path
+            Guid BcfGuid = Guid.NewGuid();
+            string fullFilePath = Path.Combine(_env.WebRootPath, "files", "excel_" + BcfGuid.ToString());
 
-            if (file == null || file.Length == 0) return Content("Item not found");
+            //Save the file on the server
+            using (FileStream stream = System.IO.File.OpenWrite(fullFilePath))
+            {
+                await file.CopyToAsync(stream);
+            }
 
-            string fileName = file.FileName;
+            //Create a new filePath for the uploaded BCF
+            FilePath BcfFile = new FilePath
+            {
+                FileName = System.IO.Path.GetFileName(file.FileName),
+                FileType = FileType.ExcelTemplate,
+                FullFilePath = fullFilePath
+            };
 
-            // process uploaded files
-            // Don't rely on or trust the FileName property without validation.
+            //Find the current user
+            ApplicationUser user = await _userManager.GetUserAsync(User);
 
-            return Ok(new { count = file.FileName, file.Length });
+            if (user.FilePaths == null) user.FilePaths = new List<FilePath>();
+            user.FilePaths.Add(BcfFile);
+
+            if (ModelState.IsValid)
+            {
+                _context.ApplicationUser.Update(user);
+                _context.SaveChanges();
+            }
+
+            return View("Index");
         }
 
         public IActionResult About()

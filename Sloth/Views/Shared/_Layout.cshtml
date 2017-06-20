@@ -9,14 +9,15 @@
     <environment names="Development">
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="~/lib/material-design-lite/material.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.4.7/dialog-polyfill.css" />
         <link rel="stylesheet" href="~/css/site.css" />
     </environment>
     <environment names="Staging,Production">
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css"
-              asp-fallback-href="~/lib/material-design-lite/material.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.4.7/dialog-polyfill.css" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+
     </environment>
 
     @Html.Raw(JavaScriptSnippet.FullScript)
@@ -26,27 +27,29 @@
     <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
             <!-- Title -->
-            <object type="image/svg+xml" data="~/images/sloth.svg">Your browser does not support SVG</object>
-            <span class="mdl-layout-title">Sloth</span>
+            <a class="mdl-layout-title" href="@Url.Action("Index", "Home")">
+                <img src="~/images/sloth.svg" alt="Sloth">
+            </a>
+            <a class="mdl-layout-title" href="@Url.Action("Index", "Home")">Sloth</a>
             <!-- Add spacer, to align navigation to the right -->
             <div class="mdl-layout-spacer"></div>
             <!-- Navigation. We hide it in small screens. -->
             <nav class="mdl-navigation mdl-layout--large-screen-only">
-                <a class="mdl-navigation__link" href="@Url.Action("Index", "Home")">Home</a>
-                <a class="mdl-navigation__link" href="@Url.Action("About", "Home")">About</a>
-                <a class="mdl-navigation__link" href="@Url.Action("Contact", "Home")">Contact</a>
-                <a class="mdl-navigation__link" href="@Url.Action("Topics", "Home")">Topics</a>
+                @Html.Partial("_Commands")
+            </nav>
+            <nav class="mdl-navigation">
                 @Html.Partial("_LoginPartial")
+            </nav>
+            <nav class="mdl-navigation mdl-layout--large-screen-only">
+                <a class="mdl-navigation__link" href="@Url.Action("About", "Home")">About</a>
             </nav>
         </div>
     </header>
     <div class="mdl-layout__drawer mdl-layout--small-screen-only" aria-hidden="true">
         <nav class="mdl-navigation mdl-typography--body-1-force-preferred-font">
-            <a class="mdl-navigation__link" href="@Url.Action("Index", "Home")">Home</a>
-            <a class="mdl-navigation__link" href="@Url.Action("About", "Home")">About</a>
-            <a class="mdl-navigation__link" href="@Url.Action("Contact", "Home")">Contact</a>
-            <a class="mdl-navigation__link" href="@Url.Action("Topics", "Home")">Topics</a>
+            @Html.Partial("_Commands")
             @Html.Partial("_LoginPartial")
+            <a class="mdl-navigation__link" href="@Url.Action("About", "Home")">About</a>
         </nav>
     </div>
 
@@ -56,9 +59,31 @@
         </div>
     </main>
 
+    <dialog class="mdl-dialog">
+        <div style="display: flex;justify-content: space-between;">
+            <h6 class="mdl-dialog__title">Templates</h6>
+            <button type="button" class="mdl-button close"><i class="material-icons">close</i></button>
+        </div>
+
+        <div class="mdl-dialog__content">
+            <p>Please load a Word template for your report</p>
+            <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="WordTemplate">
+                <label class="mdl-button mdl-js-button">
+                    <i class="material-icons">backup</i>
+                    <span class="">Word</span>
+                    <input type="file" name="file" style="display: none;" onchange="this.form.submit()" />
+                </label>
+            </form>
+        </div>
+        <div class="mdl-dialog__content">
+            <p>Please load an Excel template for your report</p>
+        </div>
+    </dialog>
+
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/material-design-lite/material.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.4.7/dialog-polyfill.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
     <environment names="Staging,Production">
@@ -68,12 +93,8 @@
                 crossorigin="anonymous"
                 integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
         </script>
-        <script src="https://code.getmdl.io/1.3.0/material.min.js"
-                asp-fallback-src="~/lib/material-design-lite/material.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                crossorigin="anonymous"
-                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
-        </script>
+        <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.4.7/dialog-polyfill.js"></script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
 
