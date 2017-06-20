@@ -15,6 +15,8 @@ using Sloth.Models;
 
 namespace Sloth.Services
 {
+    
+
     public static class SessionExtensionMethods
     {
         public static void SetObject(this ISession session, string key, object value)
@@ -76,8 +78,12 @@ namespace Sloth.Services
 
     public static class ExportServices
     {
-        public static MemoryStream ExportAsWord(List<FilePath> BCFFiles)
+        public static string _wordTemplatePath;
+
+        public static MemoryStream ExportAsWord(List<FilePath> BCFFiles, string wordTemplatePath)
         {
+            _wordTemplatePath = wordTemplatePath;
+
             List<Topic> topics = new List<Topic>();
 
             foreach (FilePath BCFFile in BCFFiles)
@@ -117,10 +123,11 @@ namespace Sloth.Services
             // Create a document in memory:
             using (DocX doc = DocX.Create("wordFileName.docx"))
             {
-                //if (_templatePath != null)
-                //{
-                //    doc.ApplyTemplate(_templatePath);
-                //}
+
+                if (!string.IsNullOrEmpty(_wordTemplatePath))
+                {
+                    doc.ApplyTemplate(_wordTemplatePath);
+                }
 
                 int i = 1;
 

@@ -13,6 +13,11 @@
     justify-content: center;
 }
 
+a.mdl-layout-title {
+    text-decoration: none;
+    color: rgb(255,255,255);
+}
+
 /*CSS for the upload form */
 
 .mdl-button--file input {
@@ -34,6 +39,20 @@
 .mdl-textfield--file .mdl-button--file {
     right: 0;
     color: #3F51B5;
+}
+
+.mdl-button--header {
+    color: rgb(255, 255, 255);
+}
+
+.mdl-layout__drawer .mdl-navigation .mdl-button--header {
+    display: block;
+    -webkit-flex-shrink: 0;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    padding: 10px 40px;
+    margin: 0;
+    color: #757575;
 }
 
 .demo-card-image.mdl-card {

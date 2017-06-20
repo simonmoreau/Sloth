@@ -66,11 +66,19 @@ namespace Sloth.Controllers
         {
             using (FileStream stream = System.IO.File.Open(bcfFilePath, FileMode.Open))
             {
-                BCF bcf = BCF.Deserialize(stream);
+                try
+                {
+                    BCF bcf = BCF.Deserialize(stream);
 
-                List<Models.DisplayTopic> DisplayTopics = bcf.Topics.Select(o => new Models.DisplayTopic(o)).ToList();
+                    List<Models.DisplayTopic> DisplayTopics = bcf.Topics.Select(o => new Models.DisplayTopic(o)).ToList();
 
-                return DisplayTopics;
+                    return DisplayTopics;
+                }
+                catch
+                {
+                    //Fail silently :-(
+                    return new List<Models.DisplayTopic>();
+                }
             }
         }
 
@@ -169,11 +177,18 @@ namespace Sloth.Controllers
                 //Get the current list of files
                 List<FilePath> BCFFiles = Services.SessionExtensionMethods.GetObject<List<FilePath>>(HttpContext.Session, "BCFFiles");
 
+                //Get the word template
+                string wordTemplatePath = "";
+                if (HttpContext.Session.Keys.Contains("wordTemplate"))
+                {
+                    wordTemplatePath = Services.SessionExtensionMethods.GetObject<string>(HttpContext.Session, "wordTemplate");
+                }
+
                 string wordFileName = Path.GetFileNameWithoutExtension(BCFFiles.FirstOrDefault().FileName) + ".docx";
 
                 Response.Headers.Add("content-disposition", "attachment; filename=" + wordFileName);
 
-                MemoryStream ms = Services.ExportServices.ExportAsWord(BCFFiles);
+                MemoryStream ms = Services.ExportServices.ExportAsWord(BCFFiles, wordTemplatePath);
 
                 byte[] bytesInStream = ms.ToArray(); // simpler way of converting to array
                 ms.Close();
@@ -234,17 +249,20 @@ namespace Sloth.Controllers
                 FullFilePath = fullFilePath
             };
 
-            //Find the current user
-            ApplicationUser user = await _userManager.GetUserAsync(User);
+            //Store it in Session
+            Services.SessionExtensionMethods.SetObject(HttpContext.Session, "wordTemplate", fullFilePath);
 
-            if (user.FilePaths == null) user.FilePaths = new List<FilePath>();
-            user.FilePaths.Add(BcfFile);
+            ////Find the current user
+            //ApplicationUser user = await _userManager.GetUserAsync(User);
 
-            if (ModelState.IsValid)
-            {
-                _context.ApplicationUser.Update(user);
-                _context.SaveChanges();
-            }
+            //if (user.FilePaths == null) user.FilePaths = new List<FilePath>();
+            //user.FilePaths.Add(BcfFile);
+
+            //if (ModelState.IsValid)
+            //{
+            //    _context.ApplicationUser.Update(user);
+            //    _context.SaveChanges();
+            //}
 
             return View("Index");
         }
