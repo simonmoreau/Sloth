@@ -1,14 +1,18 @@
 
-<p align="center"><img width=12.5% src="https://github.com/anfederico/Clairvoyant/blob/master/media/Logo.png"></p>
-# Sloth
+<p align="center"><img width=12.5% src="https://github.com/simonmoreau/Sloth/blob/master/Images/sloth.png"></p>
+<h1 align="center">
+  <br>
+  Sloth
+  <br>
+</h1>
 
 Sloth is a web-based BCF reports generator
 
-![screenshot](https://raw.githubusercontent.com/amitmerchant1990/electron-markdownify/master/img/markdownify.gif)
+![screenshot](https://github.com/simonmoreau/Sloth/blob/master/Images/uploadBCF.gif)
 
 ## Key Features
 
-* Visualise BIM Collaboration Format files
+* Visualise [BIM Collaboration Format](http://www.buildingsmart-tech.org/specifications/bcf-releases) files
   - The application support both BCF 1.0 and 2.0
 * Upload one or multiple BCF files
   - While you type, LivePreview will automatically scroll to the current location you're editing.
