@@ -30,13 +30,18 @@ namespace Sloth.Models
             AssignedTo = topic.Markup.Topic.AssignedTo;
             TopicStatus = !String.IsNullOrEmpty(topic.Markup.Topic.TopicStatus) ? topic.Markup.Topic.TopicStatus: firstComment.Status;
 
-            if (topic.Snapshots.FirstOrDefault().Value!=null)
+            ImageSource = "";
+            if (topic.Snapshots.Count != 0)
             {
-                ImageSource = Services.BCFServices.GetImageFromBytes(topic.Snapshots.FirstOrDefault().Value, true);
-            }
-            else
-            {
-                ImageSource = "";
+                byte[] snapshot = topic.Snapshots.First(kvp => kvp.Key.Contains("snapshot")).Value;
+                if (snapshot != null)
+                {
+                    ImageSource = Services.BCFServices.GetImageFromBytes(snapshot, true);
+                }
+                else
+                {
+                    ImageSource = Services.BCFServices.GetImageFromBytes(topic.Snapshots.FirstOrDefault().Value, true);
+                }
             }
 
         }

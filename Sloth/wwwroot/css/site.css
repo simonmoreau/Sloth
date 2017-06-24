@@ -76,7 +76,17 @@ a.mdl-layout-title {
     width: 100%;
 }
 
+.demo-card-wide > .mdl-card__fullimage {
+    color: #fff;
+    height: 250px;
+    background: url('../images/logo.png') center / cover;
+}
+
 .logo-export{
     height:20px;
     width:20px;
+}
+
+.mdl-dialog.mdl-dialog--large{
+    width:350px;
 }

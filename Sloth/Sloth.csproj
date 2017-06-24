@@ -19,6 +19,7 @@
     <Content Include="wwwroot\images\apple.jpg" />
     <Content Include="wwwroot\images\doc.svg" />
     <Content Include="wwwroot\images\GitHub.svg" />
+    <Content Include="wwwroot\images\logo.png" />
     <Content Include="wwwroot\images\pdf.svg" />
     <Content Include="wwwroot\images\sloth.svg" />
     <Content Include="wwwroot\images\xls.svg" />
@@ -55,6 +56,8 @@
     <ProjectReference Include="..\..\XbimBCF\Xbim.BCF\Xbim.BCF.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="wwwroot\files\" />
+    <Folder Include="wwwroot\files\" />
     <Folder Include="wwwroot\files\" />
     <Folder Include="wwwroot\files\" />
     <Folder Include="wwwroot\files\" />

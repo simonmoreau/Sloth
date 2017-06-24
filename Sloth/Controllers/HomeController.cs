@@ -74,7 +74,7 @@ namespace Sloth.Controllers
 
                     return DisplayTopics;
                 }
-                catch
+                catch (Exception ex)
                 {
                     //Fail silently :-(
                     return new List<Models.DisplayTopic>();

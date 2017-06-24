@@ -1,84 +1,43 @@
-# Project Title
 
-One Paragraph of project description goes here
+<p align="center"><img width=12.5% src="https://github.com/anfederico/Clairvoyant/blob/master/media/Logo.png"></p>
+# Sloth
+
+Sloth is a web-based BCF reports generator
+
+![screenshot](https://raw.githubusercontent.com/amitmerchant1990/electron-markdownify/master/img/markdownify.gif)
+
+## Key Features
+
+* Visualise BIM Collaboration Format files
+  - The application support both BCF 1.0 and 2.0
+* Upload one or multiple BCF files
+  - While you type, LivePreview will automatically scroll to the current location you're editing.
+* Export these BCF in a Word or an Excel report
+* Upload your own Word template
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-
-### Prerequisites
-
-What things you need to install the software and how to install them
-
-```
-Give examples
-```
-
-### Installing
-
-A step by step series of examples that tell you have to get a development env running
-
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
+Open the solution in Visual Studio 2017, retrieve the packages and hit Run.
 
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+This solution can be published to an [Azure Web Server](azure.microsoft.com).
 
 ## Built With
 
 * [ASP.NET Core](https://www.microsoft.com/net/core#windowsvs2017) - The back-end framework
 * [Material Design Light](https://getmdl.io/) - The front-end library
-* [The Noun Project](thenounproject.com) - For the icon
+* The [Noun Project](https://thenounproject.com) - For the icon
 
 ## Contributing
 
 Please feel free to propose pull request, I would be happy to integrate your improvements.
 
-## Authors
-
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
-## Acknowledgments
+## Credits
 
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
+* Icons by Oksana Latysheva and Dmitry Mirolyubov from the [Noun Project](https://thenounproject.com)
+* BCF Serializing/Deserializing from [XBIM](https://github.com/xBimTeam/XbimBCF)

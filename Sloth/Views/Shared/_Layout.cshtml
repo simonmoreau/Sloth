@@ -37,9 +37,9 @@
             <nav class="mdl-navigation mdl-layout--large-screen-only">
                 @Html.Partial("_Commands")
             </nav>
-            <nav class="mdl-navigation">
+            @*<nav class="mdl-navigation">
                 @Html.Partial("_LoginPartial")
-            </nav>
+            </nav>*@
             <nav class="mdl-navigation mdl-layout--large-screen-only">
                 <a class="mdl-navigation__link" href="@Url.Action("About", "Home")">About</a>
             </nav>
@@ -59,7 +59,7 @@
         </div>
     </main>
 
-    <dialog class="mdl-dialog">
+    <dialog class="mdl-dialog mdl-dialog--large">
         <div style="display: flex;justify-content: space-between;">
             <h6 class="mdl-dialog__title">Templates</h6>
             <button type="button" class="mdl-button close"><i class="material-icons">close</i></button>
@@ -75,9 +75,9 @@
                 </label>
             </form>
         </div>
-        <div class="mdl-dialog__content">
+        @*<div class="mdl-dialog__content">
             <p>Please load an Excel template for your report</p>
-        </div>
+        </div>*@
     </dialog>
 
     <environment names="Development">

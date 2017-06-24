@@ -15,7 +15,7 @@ using Sloth.Models;
 
 namespace Sloth.Services
 {
-    
+
 
     public static class SessionExtensionMethods
     {
@@ -56,7 +56,7 @@ namespace Sloth.Services
         public static MemoryStream GetImageStreamFromBytes(byte[] bytes, bool compress)
         {
             System.IO.MemoryStream myMemStream = new System.IO.MemoryStream(bytes);
-            
+
             if (compress)
             {
                 System.Drawing.Image fullsizeImage = System.Drawing.Image.FromStream(myMemStream);
@@ -71,7 +71,7 @@ namespace Sloth.Services
                 return myMemStream;
             }
 
-            
+
         }
 
     }
@@ -131,7 +131,10 @@ namespace Sloth.Services
 
                 int i = 1;
 
-                foreach (Topic topic in topics)
+                //Sort topics by date
+                List<Topic> sortedTopics = topics.OrderBy(x => x.Markup.Topic.Description).ToList();
+
+                foreach (Topic topic in sortedTopics)
                 {
                     //Add note to the report
                     AddTopicToWord(topic, doc);
@@ -165,7 +168,10 @@ namespace Sloth.Services
                 worksheet.Cells[1, 7].Value = "Comment";
                 worksheet.Cells[1, 8].Value = "Picture";
 
-                foreach (Topic topic in topics)
+                //Sort topics by date
+                List<Topic> sortedTopics = topics.OrderBy(x => x.Markup.Topic.Description).ToList();
+
+                foreach (Topic topic in sortedTopics)
                 {
                     //Add note to the report
                     AddTopicToExcel(topic, worksheet, i);
@@ -199,56 +205,23 @@ namespace Sloth.Services
             // Insert a paragrpah:
             p = doc.InsertParagraph(topic.Markup.Topic.Title);
             //p.StyleName = _styles.TitleStyle;
+            p.StyleName = "Heading1";
 
-            doc.InsertParagraph("");
 
-            //Insert the date of the note
-            if (topic.Markup.Comments.FirstOrDefault() != null)
+            //Add elements of the topics
+            p = AddLine("Note created ", "on ", topic.Markup.Topic.CreationDate.ToString(), " by ", topic.Markup.Topic.CreationAuthor,p,doc);
+            if (!string.IsNullOrEmpty(topic.Markup.Topic.CreationDate.ToString()) || !string.IsNullOrEmpty(topic.Markup.Topic.CreationAuthor))  p.StyleName = "Heading2";
+            p = AddLine("Note assigned to ", "", topic.Markup.Topic.AssignedTo, "", "", p, doc);
+            p = AddLine("", "", topic.Markup.Topic.Description, "", "", p, doc);
+            p = AddLine("Note modified ", "on ", topic.Markup.Topic.ModifiedDate.ToString(), " by ", topic.Markup.Topic.ModifiedAuthor, p, doc);
+
+            //Check if any comment contain a viewpoint
+            if (topic.Markup.Comments.Where(x=>x.Viewpoint != null).Count() == 0)
             {
-                p = doc.InsertParagraph("Note created on " + topic.Markup.Comments[0].Date.ToString() + " by " + topic.Markup.Comments[0].Author);
-                //p.StyleName = _styles.DateStyle;
-
-                p = doc.InsertParagraph("Status : " + topic.Markup.Comments[0].Status + " - " + topic.Markup.Comments[0].VerbalStatus);
-                //p.StyleName = _styles.DateStyle;
-
-                p = doc.InsertParagraph(topic.Markup.Comments[0].Comment);
-                //p.StyleName = _styles.ContentStyle;
+                p = AddPicture(topic, "snapshot", doc, p);
             }
 
-
-            if (topic.Snapshots != null)
-            {
-                if (topic.Snapshots.Count != 0)
-                {
-                    System.IO.MemoryStream myMemStream = Services.BCFServices.GetImageStreamFromBytes(topic.Snapshots.FirstOrDefault().Value, false);
-                    //System.Drawing.Image fullsizeImage = System.Drawing.Image.FromStream(myMemStream);
-
-                    // Add an Image to the docx file
-                    Novacode.Image img = doc.AddImage(myMemStream);
-                    //myMemStream.Close();
-                    Novacode.Picture pic = img.CreatePicture(); // img.CreatePicture(450, 600);
-
-                    p = doc.InsertParagraph("", false);
-                    p.InsertPicture(pic);
-                }
-            }
-
-
-            if (topic.Markup.Comments != null)
-            {
-                int commentCount = topic.Markup.Comments.Count();
-                if (commentCount > 1)
-                {
-                    for (int j = 1; j < commentCount; j++)
-                    {
-                        p = doc.InsertParagraph("Note created on " + topic.Markup.Comments[j].Date.ToString() + " by " + topic.Markup.Comments[0].Author);
-                        //p.StyleName = _styles.DateStyle;
-
-                        p = doc.InsertParagraph(topic.Markup.Comments[j].Comment);
-                        //p.StyleName = _styles.ContentStyle;
-                    }
-                }
-            }
+            p = AddComments(topic, doc,p);
 
             p.InsertPageBreakAfterSelf();
         }
@@ -316,5 +289,87 @@ namespace Sloth.Services
             //    }
             //}
         }
+
+        private static Paragraph AddPicture(Topic topic, string pictureName, DocX doc, Paragraph p)
+        {
+            if (topic.Snapshots == null) return p;
+
+            List<KeyValuePair<string, byte[]>> snapshots = topic.Snapshots.Where(item => item.Key.Contains(pictureName)).ToList();
+
+            if (snapshots.Count == 0) return p;
+
+            System.IO.MemoryStream myMemStream = Services.BCFServices.GetImageStreamFromBytes(snapshots.FirstOrDefault().Value, false);
+            //System.Drawing.Image fullsizeImage = System.Drawing.Image.FromStream(myMemStream);
+
+            // Add an Image to the docx file
+            Novacode.Image img = doc.AddImage(myMemStream);
+            //myMemStream.Close();
+            Novacode.Picture pic = img.CreatePicture();
+            //Create a image with more or less the width of the page
+            int newWidth = 568;
+            double ratio = Convert.ToDouble(pic.Height) / Convert.ToDouble(pic.Width);
+            int newHeight = Convert.ToInt16(Math.Round(ratio * newWidth));
+            pic.Height = newHeight;
+            pic.Width = newWidth;
+
+            p = doc.InsertParagraph("");
+            p = doc.InsertParagraph("");
+
+            p.InsertPicture(pic);
+
+            return p;
+        }
+
+        private static Paragraph AddComments(Topic topic, DocX doc, Paragraph p)
+        {
+            if (topic.Markup.Comments == null) return p;
+
+            List<BCFComment> sortedComment = topic.Markup.Comments.OrderBy(x => x.Date).ToList();
+
+            foreach (BCFComment comment in sortedComment)
+            {
+                p = AddLine("Comment created ", "on ", comment.Date.ToString(), " by ", comment.Author, p, doc);
+                p.StyleName = "Heading2";
+                p = AddLine("Status: ", "", comment.Status, " - ", comment.VerbalStatus, p, doc);
+                p = AddLine("", "", comment.Comment, "", "", p, doc);
+                p = AddLine("Comment modified ", "on ", comment.ModifiedDate.ToString(), " by ", comment.ModifiedAuthor, p, doc);
+
+                if (comment.Viewpoint != null)
+                {
+                    List<BCFViewpoint> viewpoints = topic.Markup.Viewpoints.Where(viewpoint => viewpoint.ID == comment.Viewpoint.ID).ToList();
+
+                    if (viewpoints.Count != 0)
+                    {
+                        BCFViewpoint viewpoint = viewpoints.FirstOrDefault();
+
+                        p = AddPicture(topic, viewpoint.Snapshot, doc, p);
+                    }
+                }
+
+                p = doc.InsertParagraph("");
+            }
+
+            return p;
+        }
+
+        private static Paragraph AddLine(string prefix, string text1, string value1, string text2, string value2, Paragraph p, DocX doc)
+        {
+            if (!string.IsNullOrEmpty(value1) && !string.IsNullOrEmpty(value2))
+            {
+                p = doc.InsertParagraph(prefix + text1 + value1 + text2 + value2);
+            }
+            else if (!string.IsNullOrEmpty(value1))
+            {
+                p = doc.InsertParagraph(prefix + text1 + value1);
+            }
+            else if (!string.IsNullOrEmpty(value2))
+            {
+                p = doc.InsertParagraph(prefix + text2 + value2);
+            }
+
+            return p;
+        }
     }
+
+    
 }
