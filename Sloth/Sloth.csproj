@@ -16,11 +16,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="wwwroot\images\apple-touch-icon-120x120-precomposed.png" />
+    <Content Include="wwwroot\images\apple-touch-icon-152x152-precomposed.png" />
+    <Content Include="wwwroot\images\apple-touch-icon-72x72-precomposed.png" />
     <Content Include="wwwroot\images\apple.jpg" />
     <Content Include="wwwroot\images\doc.svg" />
+    <Content Include="wwwroot\images\favicon-coast.png" />
+    <Content Include="wwwroot\images\favicon.png" />
     <Content Include="wwwroot\images\GitHub.svg" />
     <Content Include="wwwroot\images\logo.png" />
     <Content Include="wwwroot\images\pdf.svg" />
+    <Content Include="wwwroot\images\pinned.png" />
     <Content Include="wwwroot\images\sloth.svg" />
     <Content Include="wwwroot\images\xls.svg" />
     <Content Include="wwwroot\js\site.js" />
@@ -56,6 +62,7 @@
     <ProjectReference Include="..\..\XbimBCF\Xbim.BCF\Xbim.BCF.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="wwwroot\files\" />
     <Folder Include="wwwroot\files\" />
     <Folder Include="wwwroot\files\" />
     <Folder Include="wwwroot\files\" />
