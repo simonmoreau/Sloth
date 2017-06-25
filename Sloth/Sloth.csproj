@@ -16,6 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="wwwroot\files\placeholder.txt" />
     <Content Include="wwwroot\images\apple-touch-icon-120x120-precomposed.png" />
     <Content Include="wwwroot\images\apple-touch-icon-152x152-precomposed.png" />
     <Content Include="wwwroot\images\apple-touch-icon-72x72-precomposed.png" />
@@ -60,17 +61,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\XbimBCF\Xbim.BCF\Xbim.BCF.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="wwwroot\files\" />
-    <Folder Include="wwwroot\files\" />
-    <Folder Include="wwwroot\files\" />
-    <Folder Include="wwwroot\files\" />
-    <Folder Include="wwwroot\files\" />
-    <Folder Include="wwwroot\files\" />
-    <Folder Include="wwwroot\files\" />
-    <Folder Include="wwwroot\files\" />
-    <Folder Include="wwwroot\files\" />
   </ItemGroup>
 
 </Project>

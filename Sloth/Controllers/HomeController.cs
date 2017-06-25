@@ -264,7 +264,7 @@ namespace Sloth.Controllers
             //    _context.SaveChanges();
             //}
 
-            return View("Index");
+            return Index();
         }
 
         [HttpPost("Home/ExcelTemplate")]

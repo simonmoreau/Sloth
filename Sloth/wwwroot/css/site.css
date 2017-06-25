@@ -18,6 +18,11 @@ a.mdl-layout-title {
     color: rgb(255,255,255);
 }
 
+a.mdl-button--link {
+    text-decoration: none;
+    color: rgb(255,255,255);
+}
+
 /*CSS for the upload form */
 
 .mdl-button--file input {
@@ -43,6 +48,7 @@ a.mdl-layout-title {
 
 .mdl-button--header {
     color: rgb(255, 255, 255);
+    min-width:24px;
 }
 
 .mdl-layout__drawer .mdl-navigation .mdl-button--header {

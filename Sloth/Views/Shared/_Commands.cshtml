@@ -5,10 +5,12 @@
 
 <nav class="mdl-navigation">
     <label class="mdl-button mdl-js-button mdl-button--header" id="show-dialog">
-        <span class="">Templates</span>
+        <span class="mdl-cell--hide-phone mdl-cell--hide-tablet">Templates</span>
+        <i class="material-icons mdl-cell--hide-desktop">description</i>
     </label>
     <label class="mdl-button mdl-js-button mdl-button--header" id="export">
-        <span class="">Export</span>
+        <span class="mdl-cell--hide-phone mdl-cell--hide-tablet">Export</span>
+        <i class="material-icons mdl-cell--hide-desktop">file_download</i>
     </label>
     <ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="export">
         <li class="mdl-menu__item">
@@ -32,9 +34,9 @@
         </li>
     </ul>
     <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Upload">
-        <label class="mdl-button mdl-js-button mdl-button--header" id="uploadBtn">
-            <i class="material-icons">backup</i>
-            <span class="">Upload BCF</span>
+        <label class="mdl-button mdl-js-button mdl-button--header" id="uploadBtn">  
+            <span class="mdl-cell--hide-phone mdl-cell--hide-tablet">Upload BCF</span>
+            <i class="material-icons mdl-cell--hide-desktop">backup</i>
             <input type="file" id="bcffile" name="file" style="display: none;" onchange="this.form.submit()" />
         </label>
     </form>
