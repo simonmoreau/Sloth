@@ -34,6 +34,8 @@ namespace Sloth.Controllers
 
         public IActionResult Index()
         {
+            ViewData["error"] = "";
+
             if (HttpContext.Session.Keys.Count() != 0)
             {
                 if (HttpContext.Session.Keys.Contains("BCFFiles"))
@@ -49,7 +51,13 @@ namespace Sloth.Controllers
                         topics.AddRange(LoadTopics(BCFfile.FullFilePath, BCFfile.FileName));
                     }
 
-                    return View("Index",topics);
+                    if (topics.Count == 0)
+                    {
+                        ViewData["error"] = "Whoops, Something Went Wrong with your BCF file ...";
+                    }
+
+                    return View("Index", topics);
+
                 }
                 else
                 {
@@ -186,7 +194,7 @@ namespace Sloth.Controllers
 
                 string wordFileName = Path.GetFileNameWithoutExtension(BCFFiles.FirstOrDefault().FileName) + ".docx";
 
-                Response.Headers.Add("content-disposition", "attachment; filename=" + wordFileName);
+                Response.Headers.Add("content-disposition", "attachment; filename=" + Uri.EscapeDataString(wordFileName));
 
                 MemoryStream ms = Services.ExportServices.ExportAsWord(BCFFiles, wordTemplatePath);
 

@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Home";
 }
+
 @if (Model == null || Model.Count() == 0)
 {
     <script>
@@ -33,6 +34,7 @@ else
                             <p class="mdl-typography--text-center mdl-typography--body-2-color-contrast">
                                 To get started, please upload a BCF file.
                             </p>
+                            <p class="mdl-typography--text-center mdl-typography--body-2-color-contrast mdl-color-text--red">@ViewData["error"]</p>
                         </div>
                     </div>
                 </div>
