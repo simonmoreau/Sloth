@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net452</TargetFramework>
+    <TargetFramework>net47</TargetFramework>
     <RuntimeIdentifier>win7-x86</RuntimeIdentifier>
   </PropertyGroup>
 
@@ -15,24 +15,7 @@
     <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Content Include="wwwroot\files\placeholder.txt" />
-    <Content Include="wwwroot\images\apple-touch-icon-120x120-precomposed.png" />
-    <Content Include="wwwroot\images\apple-touch-icon-152x152-precomposed.png" />
-    <Content Include="wwwroot\images\apple-touch-icon-72x72-precomposed.png" />
-    <Content Include="wwwroot\images\apple.jpg" />
-    <Content Include="wwwroot\images\doc.svg" />
-    <Content Include="wwwroot\images\favicon-coast.png" />
-    <Content Include="wwwroot\images\favicon.png" />
-    <Content Include="wwwroot\images\GitHub.svg" />
-    <Content Include="wwwroot\images\logo.png" />
-    <Content Include="wwwroot\images\pdf.svg" />
-    <Content Include="wwwroot\images\pinned.png" />
-    <Content Include="wwwroot\images\sloth.svg" />
-    <Content Include="wwwroot\images\xls.svg" />
-    <Content Include="wwwroot\js\site.js" />
-    <Content Include="wwwroot\js\site.ts" />
-  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="DocX" Version="1.0.0.22" />
     <PackageReference Include="EPPlus" Version="4.1.0" />
@@ -61,6 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\XbimBCF\Xbim.BCF\Xbim.BCF.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\files\" />
   </ItemGroup>
 
 </Project>
