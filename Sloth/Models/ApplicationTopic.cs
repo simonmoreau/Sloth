@@ -18,6 +18,11 @@ namespace Sloth.Models
         {
             BCFComment firstComment = topic.Markup.Comments.FirstOrDefault();
 
+            if (firstComment == null)
+            {
+                firstComment = new BCFComment(System.Guid.NewGuid(), topic.Markup.Topic.Guid, " ", DateTime.Now, " ", " ");
+            }
+
             Guid = topic.Markup.Topic.Guid;
             Title = topic.Markup.Topic.Title ;
             TopicType = topic.Markup.Topic.TopicType;
