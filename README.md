@@ -1,47 +1,27 @@
+# Sloth
 
-<p align="center"><img width=12.5% src="https://github.com/simonmoreau/Sloth/blob/master/Images/sloth.png"></p>
-<h1 align="center">
-  <br>
-  Sloth
-  <br>
-</h1>
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.1.
 
-Sloth is a web-based BCF reports generator
+## Development server
 
-![screenshot](https://github.com/simonmoreau/Sloth/blob/master/Images/uploadBCF.gif)
+Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
-## Key Features
+## Code scaffolding
 
-* Visualise [BIM Collaboration Format](http://www.buildingsmart-tech.org/specifications/bcf-releases) files
-  - The application support both BCF 1.0 and 2.0
-* Upload one or multiple BCF files
-  - While you type, LivePreview will automatically scroll to the current location you're editing.
-* Export these BCF in a Word or an Excel report
-* Upload your own Word template
+Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-## Getting Started
+## Build
 
-Open the solution in Visual Studio 2017, retrieve the packages and hit Run.
+Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
-## Deployment
+## Running unit tests
 
-This solution can be published to an [Azure Web Server](azure.microsoft.com).
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-## Built With
+## Running end-to-end tests
 
-* [ASP.NET Core](https://www.microsoft.com/net/core#windowsvs2017) - The back-end framework
-* [Material Design Light](https://getmdl.io/) - The front-end library
-* The [Noun Project](https://thenounproject.com) - For the icon
+Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
 
-## Contributing
+## Further help
 
-Please feel free to propose pull request, I would be happy to integrate your improvements.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Credits
-
-* Icons by Oksana Latysheva and Dmitry Mirolyubov from the [Noun Project](https://thenounproject.com)
-* BCF Serializing/Deserializing from [XBIM](https://github.com/xBimTeam/XbimBCF)
+To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
