@@ -21,7 +21,6 @@
     "@angular/platform-browser": "^14.0.0",
     "@angular/platform-browser-dynamic": "^14.0.0",
     "@angular/router": "^14.0.0",
-    "@parametricos/bcf-js": "^0.1.3",
     "devextreme": "^22.1.3",
     "devextreme-angular": "^22.1.3",
     "devextreme-schematics": "^1.4.2",

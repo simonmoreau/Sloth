@@ -10,6 +10,10 @@
 <div class="content-block">
   <div class="dx-card responsive-paddings" *ngFor="let topic of topics">
     <p>{{topic.markup?.topic?.title ?? "placeholder"}}</p>
+    <div *ngIf="topicToImage(topic)">
+      <img [src]="topicToImage(topic)">
+    </div>
+    
   </div>
 </div>
 <h2 class="content-block">Home</h2>
